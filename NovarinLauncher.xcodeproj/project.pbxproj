@@ -6,7 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C5367B502E00147C0021AC7F /* NovarinRPCManager.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = C5367B1B2E0011D00021AC7F /* NovarinRPCManager.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		C5367B282E0011D20021AC7F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C5F2EB792DFE90F700AE8864 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C5367B1A2E0011D00021AC7F;
+			remoteInfo = NovarinRPCManager;
+		};
+		C5367B322E0011D20021AC7F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C5F2EB792DFE90F700AE8864 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C5367B1A2E0011D00021AC7F;
+			remoteInfo = NovarinRPCManager;
+		};
 		C5F2EB8F2DFE90F900AE8864 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C5F2EB792DFE90F700AE8864 /* Project object */;
@@ -23,7 +41,33 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C5367B4F2E00143D0021AC7F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = NovarinRPCManager;
+			dstSubfolderSpec = 7;
+			files = (
+				C5367B502E00147C0021AC7F /* NovarinRPCManager.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B5F2E00255F0021AC7F /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C5367B1B2E0011D00021AC7F /* NovarinRPCManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NovarinRPCManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5367B272E0011D20021AC7F /* NovarinRPCManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovarinRPCManagerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5367B312E0011D20021AC7F /* NovarinRPCManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovarinRPCManagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5F2EB812DFE90F700AE8864 /* NovarinLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NovarinLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5F2EB8E2DFE90F900AE8864 /* NovarinLauncherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovarinLauncherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5F2EB982DFE90F900AE8864 /* NovarinLauncherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NovarinLauncherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,7 +83,38 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		C5367B602E00255F0021AC7F /* Exceptions for "NovarinRPCManager" folder in "Embed Libraries" phase from "NovarinRPCManager" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				libraries/discord_game_sdk.dylib = (CodeSignOnCopy, );
+			};
+			buildPhase = C5367B5F2E00255F0021AC7F /* Embed Libraries */;
+			membershipExceptions = (
+				libraries/discord_game_sdk.dylib,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C5367B1C2E0011D00021AC7F /* NovarinRPCManager */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C5367B602E00255F0021AC7F /* Exceptions for "NovarinRPCManager" folder in "Embed Libraries" phase from "NovarinRPCManager" target */,
+			);
+			path = NovarinRPCManager;
+			sourceTree = "<group>";
+		};
+		C5367B2A2E0011D20021AC7F /* NovarinRPCManagerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NovarinRPCManagerTests;
+			sourceTree = "<group>";
+		};
+		C5367B342E0011D20021AC7F /* NovarinRPCManagerUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NovarinRPCManagerUITests;
+			sourceTree = "<group>";
+		};
 		C5F2EB832DFE90F700AE8864 /* NovarinLauncher */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -61,6 +136,27 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C5367B182E0011D00021AC7F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B242E0011D20021AC7F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B2E2E0011D20021AC7F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5F2EB7E2DFE90F700AE8864 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -85,12 +181,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C5367B5C2E0024E80021AC7F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C5F2EB782DFE90F700AE8864 = {
 			isa = PBXGroup;
 			children = (
 				C5F2EB832DFE90F700AE8864 /* NovarinLauncher */,
 				C5F2EB912DFE90F900AE8864 /* NovarinLauncherTests */,
 				C5F2EB9B2DFE90F900AE8864 /* NovarinLauncherUITests */,
+				C5367B1C2E0011D00021AC7F /* NovarinRPCManager */,
+				C5367B2A2E0011D20021AC7F /* NovarinRPCManagerTests */,
+				C5367B342E0011D20021AC7F /* NovarinRPCManagerUITests */,
+				C5367B5C2E0024E80021AC7F /* Frameworks */,
 				C5F2EB822DFE90F700AE8864 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,6 +208,9 @@
 				C5F2EB812DFE90F700AE8864 /* NovarinLauncher.app */,
 				C5F2EB8E2DFE90F900AE8864 /* NovarinLauncherTests.xctest */,
 				C5F2EB982DFE90F900AE8864 /* NovarinLauncherUITests.xctest */,
+				C5367B1B2E0011D00021AC7F /* NovarinRPCManager.app */,
+				C5367B272E0011D20021AC7F /* NovarinRPCManagerTests.xctest */,
+				C5367B312E0011D20021AC7F /* NovarinRPCManagerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +218,75 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C5367B1A2E0011D00021AC7F /* NovarinRPCManager */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5367B3F2E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManager" */;
+			buildPhases = (
+				C5367B172E0011D00021AC7F /* Sources */,
+				C5367B182E0011D00021AC7F /* Frameworks */,
+				C5367B192E0011D00021AC7F /* Resources */,
+				C5367B5F2E00255F0021AC7F /* Embed Libraries */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C5367B1C2E0011D00021AC7F /* NovarinRPCManager */,
+			);
+			name = NovarinRPCManager;
+			packageProductDependencies = (
+			);
+			productName = NovarinRPCManager;
+			productReference = C5367B1B2E0011D00021AC7F /* NovarinRPCManager.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C5367B262E0011D20021AC7F /* NovarinRPCManagerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5367B402E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManagerTests" */;
+			buildPhases = (
+				C5367B232E0011D20021AC7F /* Sources */,
+				C5367B242E0011D20021AC7F /* Frameworks */,
+				C5367B252E0011D20021AC7F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C5367B292E0011D20021AC7F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C5367B2A2E0011D20021AC7F /* NovarinRPCManagerTests */,
+			);
+			name = NovarinRPCManagerTests;
+			packageProductDependencies = (
+			);
+			productName = NovarinRPCManagerTests;
+			productReference = C5367B272E0011D20021AC7F /* NovarinRPCManagerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C5367B302E0011D20021AC7F /* NovarinRPCManagerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5367B412E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManagerUITests" */;
+			buildPhases = (
+				C5367B2D2E0011D20021AC7F /* Sources */,
+				C5367B2E2E0011D20021AC7F /* Frameworks */,
+				C5367B2F2E0011D20021AC7F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C5367B332E0011D20021AC7F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				C5367B342E0011D20021AC7F /* NovarinRPCManagerUITests */,
+			);
+			name = NovarinRPCManagerUITests;
+			packageProductDependencies = (
+			);
+			productName = NovarinRPCManagerUITests;
+			productReference = C5367B312E0011D20021AC7F /* NovarinRPCManagerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		C5F2EB802DFE90F700AE8864 /* NovarinLauncher */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C5F2EBA22DFE90F900AE8864 /* Build configuration list for PBXNativeTarget "NovarinLauncher" */;
@@ -115,6 +294,7 @@
 				C5F2EB7D2DFE90F700AE8864 /* Sources */,
 				C5F2EB7E2DFE90F700AE8864 /* Frameworks */,
 				C5F2EB7F2DFE90F700AE8864 /* Resources */,
+				C5367B4F2E00143D0021AC7F /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -186,6 +366,18 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					C5367B1A2E0011D00021AC7F = {
+						CreatedOnToolsVersion = 26.0;
+						LastSwiftMigration = 2600;
+					};
+					C5367B262E0011D20021AC7F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = C5367B1A2E0011D00021AC7F;
+					};
+					C5367B302E0011D20021AC7F = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = C5367B1A2E0011D00021AC7F;
+					};
 					C5F2EB802DFE90F700AE8864 = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -216,11 +408,35 @@
 				C5F2EB802DFE90F700AE8864 /* NovarinLauncher */,
 				C5F2EB8D2DFE90F900AE8864 /* NovarinLauncherTests */,
 				C5F2EB972DFE90F900AE8864 /* NovarinLauncherUITests */,
+				C5367B1A2E0011D00021AC7F /* NovarinRPCManager */,
+				C5367B262E0011D20021AC7F /* NovarinRPCManagerTests */,
+				C5367B302E0011D20021AC7F /* NovarinRPCManagerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C5367B192E0011D00021AC7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B252E0011D20021AC7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B2F2E0011D20021AC7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5F2EB7F2DFE90F700AE8864 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +461,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C5367B172E0011D00021AC7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B232E0011D20021AC7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5367B2D2E0011D20021AC7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C5F2EB7D2DFE90F700AE8864 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +506,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C5367B292E0011D20021AC7F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C5367B1A2E0011D00021AC7F /* NovarinRPCManager */;
+			targetProxy = C5367B282E0011D20021AC7F /* PBXContainerItemProxy */;
+		};
+		C5367B332E0011D20021AC7F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C5367B1A2E0011D00021AC7F /* NovarinRPCManager */;
+			targetProxy = C5367B322E0011D20021AC7F /* PBXContainerItemProxy */;
+		};
 		C5F2EB902DFE90F900AE8864 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C5F2EB802DFE90F700AE8864 /* NovarinLauncher */;
@@ -282,6 +529,157 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C5367B392E0011D20021AC7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NovarinRPCManager/Info.plist;
+				INFOPLIST_KEY_LSBackgroundOnly = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NovarinRPCManager/libraries",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManager;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "NovarinRPCManager/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C5367B3A2E0011D20021AC7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NovarinRPCManager/Info.plist;
+				INFOPLIST_KEY_LSBackgroundOnly = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NovarinRPCManager/libraries",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManager;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "NovarinRPCManager/Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C5367B3B2E0011D20021AC7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NovarinRPCManager.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NovarinRPCManager";
+			};
+			name = Debug;
+		};
+		C5367B3C2E0011D20021AC7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NovarinRPCManager.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NovarinRPCManager";
+			};
+			name = Release;
+		};
+		C5367B3D2E0011D20021AC7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManagerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = NovarinRPCManager;
+			};
+			name = Debug;
+		};
+		C5367B3E2E0011D20021AC7F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinRPCManagerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = NovarinRPCManager;
+			};
+			name = Release;
+		};
 		C5F2EBA02DFE90F900AE8864 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -409,7 +807,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -421,8 +819,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.1;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinLauncher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -441,7 +839,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -453,8 +851,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
-				MARKETING_VERSION = 1.1;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.novarin.NovarinLauncher;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -545,6 +943,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C5367B3F2E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5367B392E0011D20021AC7F /* Debug */,
+				C5367B3A2E0011D20021AC7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C5367B402E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManagerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5367B3B2E0011D20021AC7F /* Debug */,
+				C5367B3C2E0011D20021AC7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C5367B412E0011D20021AC7F /* Build configuration list for PBXNativeTarget "NovarinRPCManagerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5367B3D2E0011D20021AC7F /* Debug */,
+				C5367B3E2E0011D20021AC7F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C5F2EB7C2DFE90F700AE8864 /* Build configuration list for PBXProject "NovarinLauncher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -46,7 +46,8 @@ class Logger {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let dateString = dateFormatter.string(from: Date())
-        let fullMessage = "[\(dateString)] \(message)\n"
+        let applicationString = "NovarinLauncher"
+        let fullMessage = "[\(applicationString)]-[\(dateString)] \(message)\n"
 
         print(fullMessage, terminator: "")
 

@@ -26,15 +26,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let ticket = json["ticket"] as? String ?? ""
         let scriptURL = json["joinscript"] as? String ?? ""
+        let jobID = json["jobid"] as? String ?? ""
+        let placeID = String(json["placeid"] as? Int ?? 0)
+        
         DispatchQueue.main.async {
             self.launchState.status = "Launching Novarin..."
             self.launchState.showButton = false
         }
+        
         self.isLaunching = true
-        launchPlayer(ticket: ticket, scriptURL: scriptURL)
+        launchPlayer(ticket: ticket, scriptURL: scriptURL, jobID: jobID, placeID: placeID)
     }
 
-    func launchPlayer(ticket: String, scriptURL: String) {
+    func launchPlayer(ticket: String, scriptURL: String, jobID: String, placeID: String) {
         Task {
             Logger.shared.log("Checking server version to see if anything needs to be updated before we launch the player...")
             let (_, _, serverVersion) = try await self.fetchVersionInfo()
@@ -47,9 +51,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     "-ticket", "\"\(ticket)\"",
                     "-scriptURL", "\"\(scriptURL)\""
                 ]
-
+                
                 do {
                     try process.run()
+                    Task {
+                        let rpcManagerPath = Bundle.main.resourcePath! + "/NovarinRPCManager/NovarinRPCManager.app/Contents/MacOS/NovarinRPCManager"
+                        let task = Process()
+                        task.launchPath = rpcManagerPath
+                        task.arguments = ["-jobID", jobID, "-placeID", placeID, "-processID", String(process.processIdentifier)]
+                        task.launch()
+                    }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                         NSApp.terminate(nil)
                     }

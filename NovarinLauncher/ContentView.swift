@@ -33,11 +33,19 @@ struct ContentView: View {
                 }
             }
             if launchState.showButton {
-                Button {
-                    NSApp.terminate(nil)
-                } label: {
-                    Text(launchState.buttonText)
-                }.buttonStyle(.borderedProminent).controlSize(.large)
+                if #available(macOS 12.0, *) {
+                    Button {
+                        NSApp.terminate(nil)
+                    } label: {
+                        Text(launchState.buttonText)
+                    }.buttonStyle(.borderedProminent).controlSize(.large)
+                } else {
+                    Button {
+                        NSApp.terminate(nil)
+                    } label: {
+                        Text(launchState.buttonText)
+                    }.controlSize(.large)
+                }
             }
         }
         .frame(width: 300, height: 300)

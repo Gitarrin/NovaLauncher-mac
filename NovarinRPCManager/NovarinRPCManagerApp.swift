@@ -12,7 +12,8 @@ struct NovarinRPCManagerApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
         var body: some Scene {
-            WindowGroup {
-            }.windowStyle(HiddenTitleBarWindowStyle())
+            Settings {
+                EmptyView()
+            }
         }
 }
