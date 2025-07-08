@@ -72,7 +72,7 @@ class DiscordManager {
         let placeId = parts[0]
         let jobId = parts[1]
 
-        let urlString = "https://novarin.cc/discord-redirect-place?id=\(placeId)&autoJoinJob=\(jobId)"
+        let urlString = "https://novarin.co/discord-redirect-place?id=\(placeId)&autoJoinJob=\(jobId)"
 
         if let url = URL(string: urlString) {
             NSWorkspace.shared.open(url)

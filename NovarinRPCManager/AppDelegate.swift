@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var openedByDiscord: Bool = false
     
     func fetchPlaceInfo(for placeID: Int) async throws -> [String: Any] {
-        guard let url = URL(string: "https://novarin.cc/marketplace/productinfo?assetId=\(placeID)") else {
+        guard let url = URL(string: "https://novarin.co/marketplace/productinfo?assetId=\(placeID)") else {
             throw URLError(.badURL)
         }
 
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func fetchPlayersInJob(for jobID: String) async throws -> [String: Any] {
-        guard let url = URL(string: "https://novarin.cc/app/api/games/playersInJob?jobid=\(jobID)") else {
+        guard let url = URL(string: "https://novarin.co/app/api/games/playersInJob?jobid=\(jobID)") else {
             throw URLError(.badURL)
         }
 

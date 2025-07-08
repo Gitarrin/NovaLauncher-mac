@@ -179,10 +179,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         self.launchState.buttonText = buttonText
                     }
                     
-                    updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                    await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
                     let (clientDownloadURL, studioDownloadURL, version) = try await fetchVersionInfo()
                     
-                    updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
+                    await updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
                     
                     let clientFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                         downloader.downloadFile(
@@ -199,7 +199,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         )
                     }
                     
-                    updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
+                    await updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
                     
                     try await withCheckedThrowingContinuation { continuation in
                         DispatchQueue.global(qos: .userInitiated).async {
@@ -212,7 +212,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         }
                     }
                     
-                    updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
+                    await updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
                     
                     let studioFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                         downloader.downloadFile(
@@ -229,7 +229,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         )
                     }
                     
-                    updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
+                    await updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
                     
                     try await withCheckedThrowingContinuation { continuation in
                         DispatchQueue.global(qos: .userInitiated).async {
@@ -244,7 +244,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     
                     saveVersion(version: version)
 
-                    updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                    await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
                     
                 } catch {
                     Logger.shared.log("Installation error: \(error)")
@@ -278,10 +278,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.launchState.buttonText = buttonText
                 }
                 
-                updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
                 let (clientDownloadURL, _, _) = try await fetchVersionInfo()
                 
-                updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
+                await updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
                 
                 let clientFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                     downloader.downloadFile(
@@ -298,7 +298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                 }
                 
-                updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
+                await updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
                 
                 try await withCheckedThrowingContinuation { continuation in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -311,7 +311,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
                 
-                updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
             } catch {
                 DispatchQueue.main.async {
                     self.launchState.isDownloading = false
@@ -345,10 +345,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.launchState.buttonText = buttonText
                 }
                 
-                updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
                 let (_, studioDownloadURL, _) = try await fetchVersionInfo()
                 
-                updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
+                await updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
                 
                 let studioFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                     downloader.downloadFile(
@@ -365,7 +365,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                 }
                 
-                updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
+                await updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
                 
                 try await withCheckedThrowingContinuation { continuation in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -378,7 +378,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
                 
-                updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
             } catch {
                 DispatchQueue.main.async {
                     self.launchState.isDownloading = false
