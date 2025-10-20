@@ -11,6 +11,7 @@ import Cocoa
 class ArgumentParser {
     var jobID: String?
     var placeID: Int?
+    var version: Int?
     var processID: Int?
 
     init(arguments: [String]) {
@@ -23,6 +24,11 @@ class ArgumentParser {
            arguments.count > placeIDIndex + 1,
            let value = Int(arguments[placeIDIndex + 1]) {
             self.placeID = value
+        }
+        if let versionIndex = arguments.firstIndex(of: "-version"),
+           arguments.count > versionIndex + 1,
+           let value = Int(arguments[versionIndex + 1]) {
+            self.version = value
         }
 
         if let processIDIndex = arguments.firstIndex(of: "-processID"),

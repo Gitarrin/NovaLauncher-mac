@@ -23,29 +23,106 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             Logger.shared.log("Failed to decode Base64 or JSON")
             return
         }
+        
+        printJSON(json)
+        
+        self.isLaunching = true
 
         let ticket = json["ticket"] as? String ?? ""
         let scriptURL = json["joinscript"] as? String ?? ""
         let jobID = json["jobid"] as? String ?? ""
         let placeID = String(json["placeid"] as? Int ?? 0)
+        let gameVersion = String(json["version"] as? Int ?? 0)
+        let launchType = json["LaunchType"] as? String ?? ""
+//        let installedVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+//        print(installedVersion)
         
-        DispatchQueue.main.async {
-            self.launchState.status = "Launching Novarin..."
-            self.launchState.showButton = false
+        Task {
+//            Logger.shared.log("Checking server version to see if the launcher needs to be updated...")
+            do {
+                self.isLaunching = true
+                
+//                let (_, serverVersion) = try await self.fetchLauncherVersionInfo()
+//                if(!self.isLauncherUpToDate(version: serverVersion)) {
+//                    Logger.shared.log("We're out of date, so I'll go update the launcher.")
+//                    await self.installLauncher(launchData: json)
+//                    return
+//                }
+                
+                DispatchQueue.main.async {
+                    self.launchState.status = "Launching Novarin \(gameVersion)..."
+                    self.launchState.showButton = false
+                }
+                
+                if let versionInt = Int(gameVersion), versionInt < 2018 {
+                    DispatchQueue.main.async {
+                        self.launchState.status = "Unsupported Version"
+                        self.launchState.showLoading = false
+                        self.launchState.showSmallStatus = true
+                        self.launchState.smallStatus = "This version of Novarin is not supported on macOS."
+                        self.launchState.showButton = true
+                        self.launchState.buttonText = "Close"
+                    }
+                    return
+                }
+                
+                switch launchType.lowercased() {
+                    case "client":
+                        launchPlayer(ticket: ticket, scriptURL: scriptURL, jobID: jobID, placeID: placeID, gameVersion: gameVersion)
+                    case "studio":
+                        DispatchQueue.main.async {
+                            self.launchState.status = "Launching Novarin Studio \(gameVersion)..."
+                            self.launchState.showButton = false
+                        }
+                        launchStudio(ticket: ticket, scriptURL: scriptURL, placeID: placeID, gameVersion: gameVersion)
+                    default:
+                        DispatchQueue.main.async {
+                            self.launchState.status = "Invalid Launch Type"
+                            self.launchState.showLoading = false
+                            self.launchState.showSmallStatus = true
+                            self.launchState.smallStatus = "If you were trying to play a game, or open a place in Novarin Studio, please ask for help in the Novarin Discord server."
+                            self.launchState.showButton = true
+                            self.launchState.buttonText = "Close"
+                        }
+                }
+            } catch {
+                Logger.shared.log("Launcher update failed: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.launchState.status = "Connection Error"
+                    self.launchState.showLoading = false
+                    self.launchState.showSmallStatus = true
+                    self.launchState.smallStatus = "We were unable to connect to our servers. Check your internet connection."
+                    self.launchState.showButton = true
+                    self.launchState.buttonText = "Close"
+                }
+            }
         }
-        
-        self.isLaunching = true
-        launchPlayer(ticket: ticket, scriptURL: scriptURL, jobID: jobID, placeID: placeID)
+    }
+    
+    func printJSON(_ object: Any, indent: String = "") {
+        if let dict = object as? [String: Any] {
+            for (key, value) in dict {
+                Logger.shared.log("\(indent)\(key):")
+                printJSON(value, indent: indent + "  ")
+            }
+        } else if let array = object as? [Any] {
+            for (index, value) in array.enumerated() {
+                Logger.shared.log("\(indent)[\(index)]:")
+                printJSON(value, indent: indent + "  ")
+            }
+        } else {
+            Logger.shared.log("\(indent)\(object)")
+        }
     }
 
-    func launchPlayer(ticket: String, scriptURL: String, jobID: String, placeID: String) {
+    func launchPlayer(ticket: String, scriptURL: String, jobID: String, placeID: String, gameVersion: String) {
         Task {
             Logger.shared.log("Checking server version to see if anything needs to be updated before we launch the player...")
-            let (_, _, serverVersion) = try await self.fetchVersionInfo()
-            if(self.isVersionUpToDate(version: serverVersion)) {
+            let (_, _, serverVersion) = try await self.fetchVersionInfo(gameVersion: gameVersion)
+            if(self.isVersionUpToDate(gameVersion: gameVersion, version: serverVersion)) {
                 Logger.shared.log("We're up to date, so let's continue with launching the player...")
                 let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/Applications/Novarin/NovarinPlayer.app/Contents/MacOS/RobloxPlayer")
+                process.executableURL = URL(fileURLWithPath: "/Applications/Novarin/\(gameVersion)/NovarinPlayer.app/Contents/MacOS/RobloxPlayer")
                 process.arguments = [
                     "-authURL", "\"http://novarin.co/Login/Negotiate.ashx\"",
                     "-ticket", "\"\(ticket)\"",
@@ -58,7 +135,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         let rpcManagerPath = Bundle.main.resourcePath! + "/NovarinRPCManager/NovarinRPCManager.app/Contents/MacOS/NovarinRPCManager"
                         let task = Process()
                         task.launchPath = rpcManagerPath
-                        task.arguments = ["-jobID", jobID, "-placeID", placeID, "-processID", String(process.processIdentifier)]
+                        task.arguments = ["-jobID", jobID, "-placeID", placeID, "-version", gameVersion, "-processID", String(process.processIdentifier)]
                         task.launch()
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
@@ -72,15 +149,94 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     Logger.shared.log("Could not launch NovarinPlayer: \(error)")
                 }
             } else {
+                let launchData: [String: Any] = [
+                    "ticket": ticket,
+                    "joinscript": scriptURL,
+                    "jobid": jobID,
+                    "placeid": placeID,
+                    "version": gameVersion,
+                    "LaunchType": "client"
+                ]
+
                 Logger.shared.log("We're out of date, so I'll go redownload the applications.")
-                await self.installAll()
+                await self.installClient(gameVersion: gameVersion, launchData: launchData)
             }
         }
     }
     
+    func launchStudio(ticket: String, scriptURL: String, placeID: String, gameVersion: String) {
+        Task {
+            Logger.shared.log("Checking server version to see if Studio needs to be updated before we launch it...")
+            let (_, _, serverVersion) = try await self.fetchVersionInfo(gameVersion: gameVersion)
+            if(self.isVersionUpToDate(gameVersion: gameVersion, version: serverVersion)) {
+                Logger.shared.log("We're up to date, so let's continue with launching Studio...")
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/Applications/Novarin/\(gameVersion)/NovarinStudio.app/Contents/MacOS/RobloxStudio")
+                process.arguments = [
+                    "-task", "EditPlace",
+                    "-placeId", "\(placeID)"
+                ]
+                
+                do {
+                    try process.run()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        NSApp.terminate(nil)
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        self.launchState.status = "Failed to launch Novarin Studio.\nPlease ask for help in the Novarin Discord server."
+                        self.launchState.showLoading = false
+                    }
+                    Logger.shared.log("Could not launch NovarinStudio: \(error)")
+                }
+            } else {
+                Logger.shared.log("We're out of date, so I'll go redownload Studio.")
+                
+                let launchData: [String: Any] = [
+                    "ticket": ticket,
+                    "joinscript": scriptURL,
+                    "jobid": NSNull.self,
+                    "placeid": placeID,
+                    "version": gameVersion,
+                    "LaunchType": "studio"
+                ]
+                
+                await self.installStudio(gameVersion: gameVersion, launchData: launchData)
+            }
+        }
+    }
+    
+    func saveLaunchDataAsJSON(_ json: [String: Any]) {
+        if let data = try? JSONSerialization.data(withJSONObject: json, options: []),
+           let jsonString = String(data: data, encoding: .utf8) {
+            UserDefaults.standard.set(jsonString, forKey: "PendingLaunchJSON")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
     // version info stuff
-    func fetchVersionInfo() async throws -> (playerUrl: String, studioUrl: String, version: String) {
-        guard let url = URL(string: "http://n.termy.lol/client/setup/client/2018/mac") else {
+    func fetchLauncherVersionInfo() async throws -> (launcherUrl: String, version: String) {
+        guard let url = URL(string: "http://n.termy.lol/client/launcher/mac") else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let launcherUrl = json["launcherUrl"] as? String,
+              let version = json["version"] as? String else {
+            Logger.shared.log(String(bytes: data, encoding: String.Encoding.utf8) ?? "nojson")
+            throw NSError(domain: "JSONError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Server returned invalid JSON"])
+        }
+        
+        return (launcherUrl, version)
+    }
+    
+    func fetchVersionInfo(gameVersion: String) async throws -> (playerUrl: String, studioUrl: String, version: String) {
+        guard let url = URL(string: "http://n.termy.lol/client/setup/client/\(gameVersion)/mac") else {
             throw URLError(.badURL)
         }
 
@@ -100,7 +256,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return (playerUrl, studioUrl, version)
     }
     
-    func saveVersion(version: String) {
+    func saveVersion(gameVersion: String, version: String) {
         guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             Logger.shared.log("Could not find Application Support directory")
             return
@@ -121,24 +277,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: versions, options: .prettyPrinted)
-            let jsonFileURL = novarinFolder.appendingPathComponent("version.json")
+            let jsonFileURL = novarinFolder.appendingPathComponent("\(gameVersion).json")
             try jsonData.write(to: jsonFileURL)
-            Logger.shared.log("Saved version.json to \(jsonFileURL.path)")
+            Logger.shared.log("Saved \(gameVersion).json to \(jsonFileURL.path)")
         } catch {
             Logger.shared.log("Failed to save JSON: \(error)")
         }
     }
 
-    func isVersionUpToDate(version: String) -> Bool {
+    func isLauncherUpToDate(version: String) -> Bool {
+        let installedVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+
+        return installedVersion == version
+    }
+    
+    func isVersionUpToDate(gameVersion: String, version: String) -> Bool {
         guard let appSupportDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             Logger.shared.log("Could not find Application Support directory.")
             return false
         }
 
-        let versionsFile = appSupportDir.appendingPathComponent("Novarin/version.json")
+        let versionsFile = appSupportDir.appendingPathComponent("Novarin/\(gameVersion).json")
 
         guard FileManager.default.fileExists(atPath: versionsFile.path) else {
-            Logger.shared.log("version.json not found.")
+            Logger.shared.log("\(gameVersion).json not found.")
             return false
         }
 
@@ -153,7 +315,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 return false
             }
         } catch {
-            Logger.shared.log("Failed to read or parse version.json: \(error)")
+            Logger.shared.log("Failed to read or parse \(gameVersion).json: \(error)")
             return false
         }
     }
@@ -161,10 +323,90 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // installation stuff
     
-    func installAll() async {
-        let clientDestZip = "/tmp/NovarinPlayer.zip"
-            let studioDestZip = "/tmp/NovarinStudio.zip"
-            let extractDir = "/Applications/Novarin"
+    func installLauncher(launchData: [String: Any]) async {
+        let launcherDestZip = "/tmp/NovarinLauncher.zip"
+        let extractDir = "/Applications"
+        let downloader = FileDownloader()
+        
+        Task {
+            do {
+                let updateUI: @MainActor (String, Bool, Double, Bool, Bool, Bool, String) -> Void = { status, isDownloading, progress, showLoading, showSmallStatus, showButton, buttonText in
+                    self.launchState.status = status
+                    self.launchState.isDownloading = isDownloading
+                    self.launchState.downloadProgress = progress
+                    self.launchState.showLoading = showLoading
+                    self.launchState.showSmallStatus = showSmallStatus
+                    self.launchState.showButton = showButton
+                    self.launchState.buttonText = buttonText
+                }
+                
+                updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                let (launcherUrl, version) = try await fetchLauncherVersionInfo()
+                updateUI("Downloading Novarin Launcher...", true, 0.0, true, false, true, "Cancel")
+                
+                let launcherFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
+                    downloader.downloadFile(
+                        from: launcherUrl,
+                        to: launcherDestZip,
+                        progress: { progress in
+                            Task { @MainActor in
+                                self.launchState.downloadProgress = progress
+                            }
+                        },
+                        completion: { result in
+                            continuation.resume(with: result)
+                        }
+                    )
+                }
+                
+                updateUI("Installing Novarin Launcher...", false, 100.0, true, false, false, "Cancel")
+                
+                try await withCheckedThrowingContinuation { continuation in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        do {
+                            try self.extractZip(from: launcherFileURL.path, to: extractDir)
+                            continuation.resume()
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    let path = Bundle.main.bundlePath
+                    let task = Process()
+                    task.launchPath = "/usr/bin/open"
+                    task.arguments = [path]
+                    do {
+                        try task.run()
+                    } catch {
+                        print("Failed to restart via open: \(error)")
+                    }
+                    
+                    self.saveLaunchDataAsJSON(launchData)
+
+                    NSApp.terminate(nil)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.launchState.isDownloading = false
+                    self.launchState.downloadProgress = 0.0
+                    self.launchState.status = "Download failed!"
+                    self.launchState.smallStatus = error.localizedDescription
+                    self.launchState.showLoading = false
+                    self.launchState.showSmallStatus = true
+                    self.launchState.showButton = true
+                    self.launchState.buttonText = "Close"
+                }
+                Logger.shared.log("Error fetching launcher URL: \(error)")
+            }
+        }
+    }
+    
+    func installAll(gameVersion: String, launchData: [String: Any]) async {
+        let clientDestZip = "/tmp/NovarinPlayer\(gameVersion).zip"
+            let studioDestZip = "/tmp/NovarinStudio\(gameVersion).zip"
+            let extractDir = "/Applications/Novarin/\(gameVersion)"
             let downloader = FileDownloader()
             
             Task {
@@ -179,10 +421,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         self.launchState.buttonText = buttonText
                     }
                     
-                    await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
-                    let (clientDownloadURL, studioDownloadURL, version) = try await fetchVersionInfo()
+                    updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                    let (clientDownloadURL, studioDownloadURL, version) = try await fetchVersionInfo(gameVersion: gameVersion)
                     
-                    await updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
+                    updateUI("Downloading Novarin Player \(gameVersion)...", true, 0.0, true, false, true, "Cancel")
                     
                     let clientFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                         downloader.downloadFile(
@@ -199,7 +441,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         )
                     }
                     
-                    await updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
+                    updateUI("Installing Novarin Player \(gameVersion)...", false, 100.0, true, false, false, "Cancel")
                     
                     try await withCheckedThrowingContinuation { continuation in
                         DispatchQueue.global(qos: .userInitiated).async {
@@ -212,7 +454,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         }
                     }
                     
-                    await updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
+                    updateUI("Downloading Novarin Studio \(gameVersion)...", true, 0.0, true, false, true, "Cancel")
                     
                     let studioFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                         downloader.downloadFile(
@@ -229,7 +471,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         )
                     }
                     
-                    await updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
+                    updateUI("Installing Novarin Studio \(gameVersion)...", false, 100.0, true, false, false, "Cancel")
                     
                     try await withCheckedThrowingContinuation { continuation in
                         DispatchQueue.global(qos: .userInitiated).async {
@@ -242,9 +484,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         }
                     }
                     
-                    saveVersion(version: version)
+                    saveVersion(gameVersion: gameVersion, version: version)
 
-                    await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                    updateUI("Novarin \(gameVersion) IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
                     
                 } catch {
                     Logger.shared.log("Installation error: \(error)")
@@ -261,9 +503,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     
-    func installClient() async {
-        let clientDestZip = "/tmp/NovarinPlayer.zip"
-        let extractDir = "/Applications/Novarin"
+    func installClient(gameVersion: String, launchData: [String: Any]) async {
+        let clientDestZip = "/tmp/NovarinPlayer\(gameVersion).zip"
+        let extractDir = "/Applications/Novarin/\(gameVersion)"
         let downloader = FileDownloader()
         
         Task {
@@ -278,10 +520,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.launchState.buttonText = buttonText
                 }
                 
-                await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
-                let (clientDownloadURL, _, _) = try await fetchVersionInfo()
+                updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                let (clientDownloadURL, _, version) = try await fetchVersionInfo(gameVersion: gameVersion)
                 
-                await updateUI("Downloading Novarin Player...", true, 0.0, true, false, true, "Cancel")
+                updateUI("Downloading Novarin Player \(gameVersion)...", true, 0.0, true, false, true, "Cancel")
                 
                 let clientFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                     downloader.downloadFile(
@@ -298,7 +540,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                 }
                 
-                await updateUI("Installing Novarin Player...", false, 100.0, true, false, false, "Cancel")
+                updateUI("Installing Novarin Player \(gameVersion)...", false, 100.0, true, false, false, "Cancel")
                 
                 try await withCheckedThrowingContinuation { continuation in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -311,7 +553,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
                 
-                await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                saveVersion(gameVersion: gameVersion, version: version)
+                
+                updateUI("Novarin \(gameVersion) IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                
+//                DispatchQueue.main.async {
+//                    let path = Bundle.main.bundlePath
+//                    let task = Process()
+//                    task.launchPath = "/usr/bin/open"
+//                    task.arguments = [path]
+//                    do {
+//                        try task.run()
+//                    } catch {
+//                        print("Failed to restart via open: \(error)")
+//                    }
+//                    
+//                    self.saveLaunchDataAsJSON(launchData)
+//
+//                    NSApp.terminate(nil)
+//                }
             } catch {
                 DispatchQueue.main.async {
                     self.launchState.isDownloading = false
@@ -328,9 +588,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func installStudio() async {
-        let studioDestZip = "/tmp/NovarinStudio.zip"
-        let extractDir = "/Applications/Novarin"
+    func installStudio(gameVersion: String, launchData: [String: Any]) async {
+        let studioDestZip = "/tmp/NovarinStudio\(gameVersion).zip"
+        let extractDir = "/Applications/Novarin/\(gameVersion)"
         let downloader = FileDownloader()
         
         Task {
@@ -345,10 +605,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     self.launchState.buttonText = buttonText
                 }
                 
-                await updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
-                let (_, studioDownloadURL, _) = try await fetchVersionInfo()
+                updateUI("Fetching information...", false, 0.0, true, false, true, "Cancel")
+                let (_, studioDownloadURL, version) = try await fetchVersionInfo(gameVersion: gameVersion)
                 
-                await updateUI("Downloading Novarin Studio...", true, 0.0, true, false, true, "Cancel")
+                updateUI("Downloading Novarin Studio \(gameVersion)...", true, 0.0, true, false, true, "Cancel")
                 
                 let studioFileURL = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<URL, Error>) in
                     downloader.downloadFile(
@@ -365,7 +625,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                 }
                 
-                await updateUI("Installing Novarin Studio...", false, 100.0, true, false, false, "Cancel")
+                updateUI("Installing Novarin Studio \(gameVersion)...", false, 100.0, true, false, false, "Cancel")
                 
                 try await withCheckedThrowingContinuation { continuation in
                     DispatchQueue.global(qos: .userInitiated).async {
@@ -378,7 +638,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     }
                 }
                 
-                await updateUI("NOVARIN IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                saveVersion(gameVersion: gameVersion, version: version)
+                
+                updateUI("Novarin STUDIO \(gameVersion) IS SUCCESSFULLY INSTALLED!", false, 100.0, false, true, true, "OK")
+                
+//                DispatchQueue.main.async {
+//                    let path = Bundle.main.bundlePath
+//                    let task = Process()
+//                    task.launchPath = "/usr/bin/open"
+//                    task.arguments = [path]
+//                    do {
+//                        try task.run()
+//                    } catch {
+//                        print("Failed to restart via open: \(error)")
+//                    }
+//                    
+//                    self.saveLaunchDataAsJSON(launchData)
+//
+//                    NSApp.terminate(nil)
+//                }
             } catch {
                 DispatchQueue.main.async {
                     self.launchState.isDownloading = false
@@ -423,66 +701,42 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.styleMask.remove(.resizable)
             window.center()
         }
+        
+//        if let jsonString = UserDefaults.standard.string(forKey: "PendingLaunchJSON"),
+//           let data = jsonString.data(using: .utf8),
+//           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+//            
+//            Logger.shared.log("Resuming launch from stored JSON after update")
+//            UserDefaults.standard.removeObject(forKey: "PendingLaunchJSON")
+//            self.isLaunching = true
+//
+//            printJSON(json)
+//
+//            let ticket = json["ticket"] as? String ?? ""
+//            let scriptURL = json["joinscript"] as? String ?? ""
+//            let jobID = json["jobid"] as? String ?? ""
+//            let placeID = String(json["placeid"] as? Int ?? 0)
+//            let gameVersion = String(json["version"] as? Int ?? 0)
+//            let launchType = json["LaunchType"] as? String ?? ""
+//
+//            Task {
+//                switch launchType.lowercased() {
+//                    case "client":
+//                        launchPlayer(ticket: ticket, scriptURL: scriptURL, jobID: jobID, placeID: placeID, gameVersion: gameVersion)
+//                    case "studio":
+//                        launchStudio(ticket: ticket, scriptURL: scriptURL, placeID: placeID, gameVersion: gameVersion)
+//                    default:
+//                        Logger.shared.log("Invalid stored launch type: \(launchType)")
+//                }
+//            }
+//            return
+//        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             if !self.isLaunching {
-                let fileManager = FileManager.default
-                let folderPath = "/Applications/Novarin"
-                    
-                var isDirectory: ObjCBool = false
-                let exists = fileManager.fileExists(atPath: folderPath, isDirectory: &isDirectory)
-                    
-                let directoryExists = exists && isDirectory.boolValue
-                let clientPath = "/Applications/Novarin/NovarinPlayer.app"
-                let clientExists = fileManager.fileExists(atPath: clientPath)
-                let studioPath = "/Applications/Novarin/NovarinStudio.app"
-                let studioExists = fileManager.fileExists(atPath: studioPath)
-
-                if !directoryExists || (!clientExists && !studioExists) {
-                    Task {
-                        Logger.shared.log("Either the Novarin directory does not exist, or it does, but both applications are not installed, so I'll just download both.")
-                        await self.installAll()
-                    }
-                } else if !clientExists {
-                    Task {
-                        Logger.shared.log("The Novarin directory does exist with NovarinStudio, but NovarinPlayer isn't there, so I'll just download that, but before I do, I'll check the server version if NovarinStudio needs to be downloaded too.")
-                        Logger.shared.log("Checking server version to see if anything needs to be updated...")
-                        let (_, _, serverVersion) = try await self.fetchVersionInfo()
-                        if(self.isVersionUpToDate(version: serverVersion)) {
-                            Logger.shared.log("Studio is up to date, so I'll just download the client.")
-                            await self.installClient()
-                        } else {
-                            Logger.shared.log("Studio is out of date, so I'll download both.")
-                            await self.installAll()
-                        }
-                    }
-                } else if !studioExists {
-                    Task {
-                        Logger.shared.log("The Novarin directory does exist with NovarinPlayer, but NovarinStudio isn't there, so I'll just download that, but before I do, I'll check the server version if NovarinPlayer needs to be downloaded too.")
-                        Logger.shared.log("Checking server version to see if anything needs to be updated...")
-                        let (_, _, serverVersion) = try await self.fetchVersionInfo()
-                        if(self.isVersionUpToDate(version: serverVersion)) {
-                            Logger.shared.log("Client is up to date, so I'll just download Studio.")
-                            await self.installStudio()
-                        } else {
-                            Logger.shared.log("Client is out of date, so I'll download both.")
-                            await self.installAll()
-                        }
-                    }
-                } else {
-                    Task {
-                        Logger.shared.log("Checking server version to see if anything needs to be updated...")
-                        let (_, _, serverVersion) = try await self.fetchVersionInfo()
-                        if(self.isVersionUpToDate(version: serverVersion)) {
-                            Logger.shared.log("Everything is there and up to date, so I'll just show the successfully installed message.")
-                            self.launchState.status = "NOVARIN IS SUCCESSFULLY INSTALLED!"
-                            self.launchState.showLoading = false
-                            self.launchState.showSmallStatus = true
-                            self.launchState.buttonText = "OK"
-                        } else {
-                            Logger.shared.log("Everything is there, though not up to date, so I'll redownload all applications.")
-                            await self.installAll()
-                        }
-                    }
+                if let url = URL(string: "https://novarin.co/") {
+                    NSWorkspace.shared.open(url)
+                    NSApp.terminate(nil)
                 }
             }
         }

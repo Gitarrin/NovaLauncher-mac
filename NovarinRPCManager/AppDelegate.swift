@@ -103,6 +103,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             Logger.shared.log("Failed to unwrap `args.placeID`.")
             return
         }
+        guard let version = args.version else {
+            Logger.shared.log("Failed to unwrap `args.version`.")
+            return
+        }
         guard let processID = args.processID else {
             Logger.shared.log("Failed to unwrap `args.processID`.")
             return
@@ -139,7 +143,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                 details: "Playing \(placeInfo["Name"] ?? "???")",
                                 startPlayTime: startPlayTime,
                                 largeImage: "novarin_logo",
-                                largeText: "Novarin",
+                                largeText: "Novarin \(version)",
                                 partyId: jobID,
                                 partyCurrentSize: playerCount,
                                 partyMaxSize: maxPlayers,

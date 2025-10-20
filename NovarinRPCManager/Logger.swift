@@ -23,7 +23,7 @@ class Logger {
         dateFormatter.dateFormat = "MM-dd-yy_HH-mm-ss"
         let dateString = dateFormatter.string(from: Date())
         let supportDir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let novarinDir = supportDir.appendingPathComponent("Novarin/logs", isDirectory: true)
+        let novarinDir = supportDir.appendingPathComponent("Novarin/logs/rpc", isDirectory: true)
 
         do {
             try fileManager.createDirectory(at: novarinDir, withIntermediateDirectories: true, attributes: nil)
