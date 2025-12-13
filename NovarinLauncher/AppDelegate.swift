@@ -158,8 +158,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     "LaunchType": "client"
                 ]
 
-                Logger.shared.log("We're out of date, so I'll go redownload the applications.")
-                await self.installClient(gameVersion: gameVersion, launchData: launchData)
+                Logger.shared.log("We're out of date, so I'll go update.")
+                await self.installAll(gameVersion: gameVersion, launchData: launchData)
             }
         }
     }
@@ -190,7 +190,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     Logger.shared.log("Could not launch NovarinStudio: \(error)")
                 }
             } else {
-                Logger.shared.log("We're out of date, so I'll go redownload Studio.")
+                Logger.shared.log("We're out of date, so I'll go update.")
                 
                 let launchData: [String: Any] = [
                     "ticket": ticket,
@@ -201,7 +201,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     "LaunchType": "studio"
                 ]
                 
-                await self.installStudio(gameVersion: gameVersion, launchData: launchData)
+                await self.installAll(gameVersion: gameVersion, launchData: launchData)
             }
         }
     }
